@@ -15,7 +15,7 @@ public class WiProPageExtractorTest {
 
     @Before
     public void setUp() throws Exception {
-        Document document = new TestDocumentProvider().getDocument(null, null);
+        Document document = new TestDocumentProvider().getDocument("", "");
         wiProPageExtractor = new WiProPageExtractor(document, "http://wiprodigital.com");
     }
 

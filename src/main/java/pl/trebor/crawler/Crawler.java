@@ -14,14 +14,15 @@ import java.util.*;
  * Crawler responsible for web site traversing.
  */
 public class Crawler {
-    private final int maxDepth;
+    private static final String CONTENT_TYPE = "text/html";
+    private final int pageLimit;
     private final String rootUrl;
 
     private Set<String> discoveredLinks = new HashSet<>();
     private Queue<String> linksToVisit = new LinkedList<>();
 
-    public Crawler(int maxDepth, String rootUrl) {
-        this.maxDepth = maxDepth;
+    public Crawler(int pageLimit, String rootUrl) {
+        this.pageLimit = pageLimit;
         this.rootUrl = rootUrl;
     }
 
@@ -34,19 +35,17 @@ public class Crawler {
 
         while (!linksToVisit.isEmpty()) {
             final String currentDomainLink = linksToVisit.poll();
-            System.out.println(currentDomainLink);
+            System.out.println("domain: " + currentDomainLink);
 
             try {
-                if (currentDepth < maxDepth) {
+                if (currentDepth < pageLimit) {
                     PageExtractor extractor = getExtractor(currentDomainLink);
                     discoveredLinks.add(currentDomainLink);
 
-                    List<String> domainLinks = extractor.getDomainLinks();
-                    for (String link : domainLinks) {
-                        if (discoveredLinks.add(link)) {
-                            linksToVisit.add(link);
-                        }
-                    }
+                    addUnvisitedToQueue(extractor.getDomainLinks());
+                    printExternalLinks(extractor.getExternalLinks());
+                    printStaticResourcesLinks(extractor.getStaticResourceLinks());
+
                     currentDepth++;
                 }
             } catch (Exception e) {
@@ -57,7 +56,27 @@ public class Crawler {
     }
 
     private PageExtractor getExtractor(String url) throws IOException, UnsupportedContentTypeException, URISyntaxException {
-        Document document = new JsoupHtmlDocumentProvider().getDocument(url, "text/html");
+        Document document = new JsoupHtmlDocumentProvider().getDocument(url, CONTENT_TYPE);
         return new WiProPageExtractor(document, rootUrl);
+    }
+
+    private void addUnvisitedToQueue(List<String> domainLinks) {
+        for (String link : domainLinks) {
+            if (discoveredLinks.add(link)) {
+                linksToVisit.add(link);
+            }
+        }
+    }
+
+    private void printExternalLinks(List<String> externalLinks) {
+        for (String link : externalLinks) {
+            System.out.println(" ext link: " + link);
+        }
+    }
+
+    private void printStaticResourcesLinks(List<String> staticResourcesLinks) {
+        for (String link : staticResourcesLinks) {
+            System.out.println(" resource: " + link);
+        }
     }
 }

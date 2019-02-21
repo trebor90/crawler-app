@@ -7,6 +7,9 @@ import pl.trebor.provider.DocumentProvider;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Static document provider for test purpose.
+ */
 public class TestDocumentProvider implements DocumentProvider {
     @Override
     public Document getDocument(String url, String expectedContentType) throws IOException {

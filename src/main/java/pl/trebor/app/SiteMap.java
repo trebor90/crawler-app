@@ -4,6 +4,6 @@ import pl.trebor.crawler.Crawler;
 
 public class SiteMap {
     public static void printSiteMap() {
-        new Crawler(5, "http://wiprodigital.com").bfsPrint();
+        new Crawler(10, "http://wiprodigital.com").bfsPrint();
     }
 }
