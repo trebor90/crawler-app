@@ -2,8 +2,10 @@ package pl.trebor.app;
 
 import pl.trebor.crawler.Crawler;
 
+import java.net.URISyntaxException;
+
 public class SiteMap {
-    public static void printSiteMap() {
-        new Crawler(10, "http://wiprodigital.com").bfsPrint();
+    public static void printSiteMap(int pageLimit, String rootUrl) throws URISyntaxException {
+        new Crawler(pageLimit, rootUrl).bfsPrint();
     }
 }

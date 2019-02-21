@@ -5,6 +5,7 @@ import pl.trebor.extractor.PageExtractor;
 import pl.trebor.extractor.WiProPageExtractor;
 import pl.trebor.provider.JsoupHtmlDocumentProvider;
 import pl.trebor.provider.exception.UnsupportedContentTypeException;
+import pl.trebor.utils.UrlUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,7 +22,8 @@ public class Crawler {
     private Set<String> discoveredLinks = new HashSet<>();
     private Queue<String> linksToVisit = new LinkedList<>();
 
-    public Crawler(int pageLimit, String rootUrl) {
+    public Crawler(int pageLimit, String rootUrl) throws URISyntaxException {
+        UrlUtils.getDomainName(rootUrl); // for validation purpose
         this.pageLimit = pageLimit;
         this.rootUrl = rootUrl;
     }
