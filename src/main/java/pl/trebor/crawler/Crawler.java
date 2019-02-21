@@ -1,10 +1,17 @@
 package pl.trebor.crawler;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import org.jsoup.nodes.Document;
+import pl.trebor.extractor.PageExtractor;
+import pl.trebor.extractor.WiProPageExtractor;
+import pl.trebor.provider.JsoupDocumentProvider;
+import pl.trebor.provider.exception.UnsupportedContentTypeException;
 
+import java.io.IOException;
+import java.util.*;
+
+/**
+ * Crawler responsible for web site traversing.
+ */
 public class Crawler {
     private final int maxDepth;
     private final String rootUrl;
@@ -17,7 +24,38 @@ public class Crawler {
         this.rootUrl = rootUrl;
     }
 
+    /**
+     * Print site links using breadth-first search approach.
+     */
     public void bfsPrint() {
+        int currentDepth = 0;
+        linksToVisit.add(rootUrl);
 
+        while (!linksToVisit.isEmpty()) {
+            final String currentDomainLink = linksToVisit.poll();
+            System.out.println(currentDomainLink);
+
+            try {
+                if (currentDepth < maxDepth) {
+                    PageExtractor extractor = getExtractor(currentDomainLink);
+                    discoveredLinks.add(currentDomainLink);
+
+                    List<String> domainLinks = extractor.getDomainLinks();
+                    for (String link : domainLinks) {
+                        if (discoveredLinks.add(link)) {
+                            linksToVisit.add(link);
+                        }
+                    }
+                    currentDepth++;
+                }
+            } catch (IOException | UnsupportedContentTypeException e) {
+                System.out.println("Cannot access document for: " + currentDomainLink);
+            }
+        }
+    }
+
+    private PageExtractor getExtractor(String url) throws IOException, UnsupportedContentTypeException {
+        Document document = new JsoupDocumentProvider().getDocument(url, "text/html");
+        return new WiProPageExtractor(document);
     }
 }
