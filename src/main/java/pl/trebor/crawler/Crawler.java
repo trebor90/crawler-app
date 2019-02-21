@@ -3,10 +3,11 @@ package pl.trebor.crawler;
 import org.jsoup.nodes.Document;
 import pl.trebor.extractor.PageExtractor;
 import pl.trebor.extractor.WiProPageExtractor;
-import pl.trebor.provider.JsoupDocumentProvider;
+import pl.trebor.provider.JsoupHtmlDocumentProvider;
 import pl.trebor.provider.exception.UnsupportedContentTypeException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -48,14 +49,15 @@ public class Crawler {
                     }
                     currentDepth++;
                 }
-            } catch (IOException | UnsupportedContentTypeException e) {
+            } catch (Exception e) {
                 System.out.println("Cannot access document for: " + currentDomainLink);
+                e.printStackTrace();
             }
         }
     }
 
-    private PageExtractor getExtractor(String url) throws IOException, UnsupportedContentTypeException {
-        Document document = new JsoupDocumentProvider().getDocument(url, "text/html");
-        return new WiProPageExtractor(document);
+    private PageExtractor getExtractor(String url) throws IOException, UnsupportedContentTypeException, URISyntaxException {
+        Document document = new JsoupHtmlDocumentProvider().getDocument(url, "text/html");
+        return new WiProPageExtractor(document, rootUrl);
     }
 }

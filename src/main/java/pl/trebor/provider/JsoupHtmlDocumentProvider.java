@@ -10,8 +10,8 @@ import java.io.IOException;
 /**
  * Provider for jsoup Document object.
  */
-public class JsoupDocumentProvider implements DocumentProvider {
-    // our crawler should seen as browser
+public class JsoupHtmlDocumentProvider implements DocumentProvider {
+    // our crawler should be seen as browser
     private static final String USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.96 Safari/537.36";
 
     @Override
